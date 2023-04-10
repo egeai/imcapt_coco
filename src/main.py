@@ -3,7 +3,6 @@
 import os
 import time
 import nltk
-from pycocotools.coco import COCO
 from pathlib import Path
 import hydra
 from datasets import load_dataset
@@ -165,13 +164,13 @@ def main(cfg: DictConfig) -> None:
 
 if __name__ == '__main__':
     # not used in this stub but often useful for finding various files
-    # project_dir = Path(__file__).resolve().parents[1]
+    project_dir = Path(__file__).resolve().parents[1]
     # mkdir data folder
-    # make_dir("data")
+    make_dir("data")
     # mkdir processed sub folder
-    # make_dir("data/processed")
+    make_dir("data/processed")
     # mkdir raw sub folder
-    # make_dir("data/raw")
+    make_dir("data/raw")
     # call the main function
     main()
 

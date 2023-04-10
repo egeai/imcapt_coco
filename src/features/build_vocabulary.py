@@ -4,6 +4,7 @@ from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import build_vocab_from_iterator
 from torchtext.vocab import Vocab
 from typing import List
+from pycocotools.coco import COCO
 
 
 class Vocabulary(object):
@@ -45,10 +46,17 @@ class Vocab(object):
             self.index += 1
 
 
-def build_vocabulary(vocabs: List, threshold):
-    """Build a simple vocabulary wrapper."""
+def build_vocabulary(json, threshold):
+    """Build a simple vocabulary wrapper.
+    First, inside the vocabulary builder function,
+    JSON text annotations are loaded, and individual
+    words in the annotation/caption are tokenized or
+    converted into numbers and stored in a counter.
+    """
+    coco = COCO(json)
     counter = Counter()
-    for i, id in enumerate(vocabs):
+    ids = coco.anns.keys()
+    for i, id in enumerate(ids):
         caption = str(coco.anns[id]['caption'])
         tokens = nltk.tokenize.word_tokenize(caption.lower())
         counter.update(tokens)
