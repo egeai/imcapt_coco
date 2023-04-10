@@ -1,0 +1,54 @@
+paths:
+  processed:
+    processed_data: ${hydra:runtime.cwd}/data/processed
+
+  raw:
+    data: ${hydra:runtime.cwd}/data/raw/
+    zipped_file: ${hydra:runtime.cwd}/data/raw/roco-dataset.zip
+    unzipped_main_folder_name: all_data
+    unzipped_train_subfolder: all_data/train
+    unzipped_val_subfolder: all_data/validation
+    unzipped_test_subfolder: all_data/test
+
+  train:
+    # TRAIN DATA
+    raw_data: ${hydra:runtime.cwd}/data/raw/train/
+    processed_data: ${hydra:runtime.cwd}/data/processed/train/
+    images_raw_data: ${hydra:runtime.cwd}/data/raw/all_data/train/radiology/images/
+    images_processed_data: ${hydra:runtime.cwd}/data/processed/train/images/
+    kaggle_radiology_images: ${hydra:runtime.cwd}/data/raw/all_data/train/radiology/images/
+    kaggle_radiology_data: ${hydra:runtime.cwd}/data/raw/all_data/train/radiology/traindata.csv
+    kaggle_radiology_keywords: ${hydra:runtime.cwd}/data/raw/all_data/train/radiology/keywords.txt
+
+  val:
+    # VALIDATION DATA
+    raw_data: ${hydra:runtime.cwd}/data/raw/validation/
+    processed_data: ${hydra:runtime.cwd}/data/processed/validation/
+    images_raw_data: ${hydra:runtime.cwd}/data/raw/all_data/validation/radiology/images/
+    images_processed_data: ${hydra:runtime.cwd}/data/processed/validation/images/
+    kaggle_radiology_images: ${hydra:runtime.cwd}/data/raw/all_data/validation/radiology/images/
+    kaggle_radiology_data: ${hydra:runtime.cwd}/data/raw/all_data/validation/radiology/valdata.csv
+    kaggle_radiology_keywords: ${hydra:runtime.cwd}/data/raw/all_data/validation/radiology/keywords.txt
+
+  test:
+    # TEST DATA
+    raw_data: ${hydra:runtime.cwd}/data/raw/test
+    processed_data: ${hydra:runtime.cwd}/data/processed/test/
+    images_raw_data: ${hydra:runtime.cwd}/data/raw/all_data/test/radiology/images/
+    images_processed_data: ${hydra:runtime.cwd}/data/processed/test/images/
+    kaggle_radiology_images: ${hydra:runtime.cwd}/data/raw/all_data/test/radiology/images/
+    kaggle_radiology_data: ${hydra:runtime.cwd}/data/raw/all_data/test/radiology/testdata.csv
+    kaggle_radiology_keywords: ${hydra:runtime.cwd}/data/raw/all_data/test/radiology/keywords.txt
+
+params:
+  max_text_tokens_length: 128
+  microsoft_pretrained: 'microsoft/git-base-coco'
+  salesforce_pretrained: 'Salesforce/blip-image-captioning-large'
+  # text_backbone: 'bert-base-uncased'
+  # image_backbone: 'google/vit-base-patch16-224'
+
+  batch_size: 8
+  max_epochs: 75
+  max_bad_epochs: 9
+  patience: 3
+  factor: 0.1
