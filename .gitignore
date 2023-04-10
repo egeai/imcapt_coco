@@ -98,3 +98,5 @@ target/
 notebooks/kaggle.json
 
 notebooks/roco-dataset.zip
+poetry.lock
+pyproject.toml

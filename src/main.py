@@ -2,12 +2,20 @@
 
 import os
 import time
+import nltk
+from pycocotools.coco import COCO
 from pathlib import Path
 import hydra
 from datasets import load_dataset
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
+
+import torch.utils.data as data
+import torchvision.models as models
+import torchvision.transforms as transforms
+from torch.nn.utils.rnn import pack_padded_sequence
+
 from transformers import logging
 import matplotlib.pyplot as plt
 from omegaconf import DictConfig
@@ -19,17 +27,18 @@ from features.image_captioning_dataset import ImageCaptioningDataset
 # from src.data.make_dataset import data_structure_flow
 # from src.models.valid_model import Validation
 
-from fastai.vision.all import *
-from fastai.text.all import *
-from fastai.collab import *
-from fastai.tabular.all import *
+# from fastai.vision.all import *
+# from fastai.text.all import *
+# from fastai.collab import *
+# from fastai.tabular.all import *
+nltk.download('punkt')
 
 logging.set_verbosity_error()
 
 
-def fastai_try(path: str):
-    dls = ImageDataLoaders.from_folder(path='../data/processed/train/images/', verbose=True)
-    print(dls)
+# def fastai_try(path: str):
+#    dls = ImageDataLoaders.from_folder(path='../data/processed/train/images/', verbose=True)
+#    print(dls)
 
 
 def make_dir(path_of_folder: str) -> bool:
@@ -151,7 +160,7 @@ def main(cfg: DictConfig) -> None:
     # plot the history
     plot_history(history)
     """
-    fastai_try(path='../data/processed/train/')
+    # fastai_try(path='../data/processed/train/')
 
 
 if __name__ == '__main__':
