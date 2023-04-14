@@ -4,11 +4,17 @@ paths:
 
   raw:
     data: ${hydra:runtime.cwd}/data/raw/
-    zipped_file: ${hydra:runtime.cwd}/data/raw/roco-dataset.zip
+    captions_zipped_file: ${hydra:runtime.cwd}/data/raw/http:/msvocds.blob.core.windows.net/annotations-1-0-3/captions_train-val2014.zip/val2014.zip
+    train_zipped_file: ${hydra:runtime.cwd}/data/raw/train2014.zip
+    validation_zipped_file: ${hydra:runtime.cwd}/data/raw/val2014.zip
+    annotations_zipped_file:  ${hydra:runtime.cwd}/data/raw/annotations_trainval2014.zip
+
     unzipped_main_folder_name: all_data
-    unzipped_train_subfolder: all_data/train
-    unzipped_val_subfolder: all_data/validation
-    unzipped_test_subfolder: all_data/test
+    unzipped_train_subfolder: ${hydra:runtime.cwd}/data/raw/all_data/train/train2014
+    unzipped_val_subfolder: ${hydra:runtime.cwd}/data/raw/all_data/validation
+    unzipped_train_val_subfolder: ${hydra:runtime.cwd}/data/raw/all_data/train/val2014
+    unzipped_annotations_subfolder: ${hydra:runtime.cwd}/data/raw/all_data
+    vocab_path: ${hydra:runtime.cwd}/data/processed/vocabulary.pkl
 
   train:
     # TRAIN DATA
@@ -52,3 +58,4 @@ params:
   max_bad_epochs: 9
   patience: 3
   factor: 0.1
+  vocab_threshold: 4

@@ -1,36 +1,28 @@
 #!/usr/bin/env python3
 
 import os
+import pickle
 import time
-import nltk
-from pathlib import Path
+
 import hydra
-from datasets import load_dataset
+import matplotlib.pyplot as plt
 import torch
 import torch.optim as optim
-from torch.utils.data import DataLoader
-
-import torch.utils.data as data
-import torchvision.models as models
-import torchvision.transforms as transforms
-from torch.nn.utils.rnn import pack_padded_sequence
-
-from transformers import logging
-import matplotlib.pyplot as plt
 from omegaconf import DictConfig
-from transformers import (AutoModelForCausalLM,
-                          AutoProcessor)
+from torch.utils.data import DataLoader
+from transformers import logging
 
-from models.train_model import Train
-from features.image_captioning_dataset import ImageCaptioningDataset
-# from src.data.make_dataset import data_structure_flow
+# from models.train_model import Train
+from src.data.make_dataset import data_ingest_flow
+from src.features.build_vocabulary import Vocabulary
+
 # from src.models.valid_model import Validation
 
 # from fastai.vision.all import *
 # from fastai.text.all import *
 # from fastai.collab import *
 # from fastai.tabular.all import *
-nltk.download('punkt')
+
 
 logging.set_verbosity_error()
 
@@ -133,14 +125,28 @@ def training(model, train_dataloader, val_dataloader, device, cfg: DictConfig):
     return history
 
 
-@hydra.main(version_base="1.3.1", config_path="conf", config_name="config")
+@hydra.main(version_base="1.3.2", config_path="conf", config_name="config")
 def main(cfg: DictConfig) -> None:
-    """
+    # Build vocabulary
+    # vocabs = Vocabulary([], cfg).start_flow()
+
     # set device to cuda
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    # device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+
     # read and prepare dataset structure
-    data_structure_flow(cfg)
-    # build vocabulary (no-need-right-now)
+    data_ingest_flow(cfg)
+
+    # build vocabulary
+    vocab = Vocabulary(json_path=cfg.paths.raw.unzipped_annotations_subfolder + '/annotations/captions_train2014.json',
+                       conf=cfg)
+    vocab = vocab.build_vocab_flow()
+
+    # with open(cfg.paths.raw.vocab_path, 'wb') as f:
+    #    pickle.dump(vocab, f)
+    print("Total vocabulary size: {}".format(len(vocab)))
+    # print("Saved the vocabulary wrapper to '{}'".format(cfg.paths.raw.vocab_path))
+
+    """
     # initialize, load model and processor from pre-trained
     processor = AutoProcessor.from_pretrained(cfg.params.microsoft_pretrained)
     model = AutoModelForCausalLM.from_pretrained(cfg.params.microsoft_pretrained).to("cuda")
@@ -164,7 +170,7 @@ def main(cfg: DictConfig) -> None:
 
 if __name__ == '__main__':
     # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[1]
+    # project_dir = Path(__file__).resolve().parents[1]
     # mkdir data folder
     make_dir("data")
     # mkdir processed sub folder
@@ -173,4 +179,3 @@ if __name__ == '__main__':
     make_dir("data/raw")
     # call the main function
     main()
-
