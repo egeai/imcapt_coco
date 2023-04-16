@@ -15,6 +15,7 @@ from transformers import logging
 # from models.train_model import Train
 from src.data.make_dataset import data_ingest_flow
 from src.features.build_vocabulary import Vocabulary
+from src.features.image_transformation import reshape_images
 
 # from src.models.valid_model import Validation
 
@@ -144,6 +145,12 @@ def main(cfg: DictConfig) -> None:
     # with open(cfg.paths.raw.vocab_path, 'wb') as f:
     #    pickle.dump(vocab, f)
     print("Total vocabulary size: {}".format(len(vocab)))
+
+    image_path = cfg.paths.train.images_raw_train_train_data
+    output_path = cfg.paths.train.processed_images_data
+    image_shape = [256, 256]
+    reshape_images(image_path, output_path, image_shape)
+
     # print("Saved the vocabulary wrapper to '{}'".format(cfg.paths.raw.vocab_path))
 
     """

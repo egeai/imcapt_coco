@@ -1,9 +1,7 @@
 import nltk
 from collections import Counter
-from torchtext.data.utils import get_tokenizer
 from pycocotools.coco import COCO
 from omegaconf import DictConfig
-from prefect import flow, task
 from dataclasses import dataclass, field
 
 nltk.download('punkt')
@@ -13,22 +11,22 @@ nltk.download('punkt')
 class VocabWrapper(object):
     """Simple vocabulary wrapper."""
 
-    w2i = {}
-    i2w = {}
+    word2int = dict()
+    int2word = dict()
     index = 0
 
     def __call__(self, token):
-        if token not in self.w2i:
-            return self.w2i['<unk>']
-        return self.w2i[token]
+        if token not in self.word2int:
+            return self.word2int['<unk>']
+        return self.word2int[token]
 
     def __len__(self):
-        return len(self.w2i)
+        return len(self.word2int)
 
     def add_token(self, token):
-        if token not in self.w2i:
-            self.w2i[token] = self.index
-            self.i2w[self.index] = token
+        if token not in self.word2int:
+            self.word2int[token] = self.index
+            self.int2word[self.index] = token
             self.index += 1
 
 

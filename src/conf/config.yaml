@@ -1,6 +1,8 @@
+work_dir: ${hydra:runtime:cwd}
+
 paths:
   processed:
-    processed_data: ${hydra:runtime.cwd}/data/processed
+    processed_data: ${work_dir}/data/processed
 
   raw:
     data: ${hydra:runtime.cwd}/data/raw/
@@ -18,13 +20,9 @@ paths:
 
   train:
     # TRAIN DATA
-    raw_data: ${hydra:runtime.cwd}/data/raw/train/
-    processed_data: ${hydra:runtime.cwd}/data/processed/train/
-    images_raw_data: ${hydra:runtime.cwd}/data/raw/all_data/train/radiology/images/
-    images_processed_data: ${hydra:runtime.cwd}/data/processed/train/images/
-    kaggle_radiology_images: ${hydra:runtime.cwd}/data/raw/all_data/train/radiology/images/
-    kaggle_radiology_data: ${hydra:runtime.cwd}/data/raw/all_data/train/radiology/traindata.csv
-    kaggle_radiology_keywords: ${hydra:runtime.cwd}/data/raw/all_data/train/radiology/keywords.txt
+    images_raw_train_train_data: ${hydra:runtime.cwd}/data/raw/all_data/train/train2014
+    images_raw_train_val_data: ${hydra:runtime.cwd}/data/raw/all_data/train/val2014
+    processed_images_data: ${hydra:runtime.cwd}/data/processed/train/
 
   val:
     # VALIDATION DATA
@@ -59,3 +57,10 @@ params:
   patience: 3
   factor: 0.1
   vocab_threshold: 4
+
+
+tests:
+  paths:
+    processed_image: ../../data/processed/train/COCO_train2014_000000000009.jpg
+
+
