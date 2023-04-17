@@ -1,8 +1,6 @@
-work_dir: ${hydra:runtime:cwd}
-
 paths:
   processed:
-    processed_data: ${work_dir}/data/processed
+    processed_data: ${hydra:runtime.cwd}/data/processed
 
   raw:
     data: ${hydra:runtime.cwd}/data/raw/
@@ -57,10 +55,4 @@ params:
   patience: 3
   factor: 0.1
   vocab_threshold: 4
-
-
-tests:
-  paths:
-    processed_image: ../../data/processed/train/COCO_train2014_000000000009.jpg
-
 

@@ -57,7 +57,8 @@ Project Organization
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
 # img-captioning
 
-poetry run python src/data/make_dataset.py
+poetry run my-script
 
 We mainly use the source link below for the project:
-https://github.com/ylaxor/clip-like/blob/main/fine-tune-clip.ipynb
+Mastering PyTorch - Second Edition
+Publisher: Packt
