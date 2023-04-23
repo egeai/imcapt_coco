@@ -3,6 +3,8 @@ image_captioning
 
 Image captioning project
 
+Project State: In Progress
+
 Project Organization
 ------------
 
