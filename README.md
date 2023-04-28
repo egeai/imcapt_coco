@@ -61,6 +61,8 @@ Project Organization
 
 poetry run my-script
 
-We mainly use the source link below for the project:
+**We mainly use the source link below for the project**:
+
 Mastering PyTorch - Second Edition
+
 Publisher: Packt
