@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import Dataset
-from image_captioning_dataset import ImageCaptioningDataset
+from .image_captioning_dataset import ImageCaptioningDataset
 
 
 def collate_function(data_batch):

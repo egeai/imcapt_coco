@@ -8,14 +8,25 @@ import hydra
 import matplotlib.pyplot as plt
 import torch
 import torch.optim as optim
+from datasets import load_dataset
 from omegaconf import DictConfig
 from torch.utils.data import DataLoader
-from transformers import logging
+from transformers import logging, AutoProcessor, AutoModelForCausalLM
+
+import torch
+import torch.nn as nn
+import torch.utils.data as data
+from torchvision import transforms
+import torchvision.models as models
+import torchvision.transforms as transforms
+from torch.nn.utils.rnn import pack_padded_sequence
 
 # from models.train_model import Train
 from src.data.make_dataset import data_ingest_flow
 from src.features.build_vocabulary import Vocabulary
+from src.features.image_captioning_dataset import ImageCaptioningDataset
 from src.features.image_transformation import reshape_images
+from src.features.build_features import get_loader
 
 # from src.models.valid_model import Validation
 
@@ -132,38 +143,63 @@ def main(cfg: DictConfig) -> None:
     # vocabs = Vocabulary([], cfg).start_flow()
 
     # set device to cuda
-    # device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
     # read and prepare dataset structure
     data_ingest_flow(cfg)
 
     # build vocabulary
-    vocab = Vocabulary(json_path=cfg.paths.raw.unzipped_annotations_subfolder + '/annotations/captions_train2014.json',
-                       conf=cfg)
-    vocab = vocab.build_vocab_flow()
+    ## vocab = Vocabulary(json_path=cfg.paths.raw.unzipped_annotations_subfolder + '/annotations/captions_train2014.json',
+    ##                 conf=cfg)
+    ## vocab = vocab.build_vocab_flow()
 
     # with open(cfg.paths.raw.vocab_path, 'wb') as f:
     #    pickle.dump(vocab, f)
-    print("Total vocabulary size: {}".format(len(vocab)))
+    ## print("Total vocabulary size: {}".format(len(vocab)))
 
     image_path = cfg.paths.train.images_raw_train_train_data
     output_path = cfg.paths.train.processed_images_data
     image_shape = [256, 256]
-    reshape_images(image_path, output_path, image_shape)
+    # reshape_images(image_path, output_path, image_shape)
 
     # print("Saved the vocabulary wrapper to '{}'".format(cfg.paths.raw.vocab_path))
 
-    """
+
     # initialize, load model and processor from pre-trained
     processor = AutoProcessor.from_pretrained(cfg.params.microsoft_pretrained)
-    model = AutoModelForCausalLM.from_pretrained(cfg.params.microsoft_pretrained).to("cuda")
+    model = AutoModelForCausalLM.from_pretrained(cfg.params.microsoft_pretrained).to(device)
     # load train, valid and test datasets
-    root = "../data/processed/"
+    root = "../imcapt_coco/data/processed/"
     train_dataset = load_dataset("imagefolder", data_dir=root, split="train")
-    val_dataset = load_dataset("imagefolder", data_dir=root, split="validation")
-    test_dataset = load_dataset("imagefolder", data_dir=root, split="test")
+    # val_dataset = load_dataset("imagefolder", data_dir=root, split="validation")
+    # test_dataset = load_dataset("imagefolder", data_dir=root, split="test")
+
+    print(train_dataset)
+
+    # Image preprocessing, normalization for the pretrained resnet
+    transform = transforms.Compose([
+        transforms.RandomCrop(224),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize((0.485, 0.456, 0.406),
+                             (0.229, 0.224, 0.225))])
+
+    # Load vocabulary wrapper
+    with open('../imcapt_coco/data/processed/vocabulary.pkl', 'rb') as f:
+        vocabulary = pickle.load(f)
+
+    # Build data loader
+    custom_data_loader = get_loader('../imcapt_coco/data/processed/train',
+                                    '../imcapt_coco/data/processed/annotations/captions_train2014.json',
+                                    vocabulary,
+                                    transform, 128,
+                                    shuffle=True, num_workers=2)
+
     # creating train and validate Dataset and DataLoader
-    train_ds = ImageCaptioningDataset(dataset=train_dataset, processor=processor)
+    # train_ds = ImageCaptioningDataset(dataset=train_dataset, processor=processor)
+    print(custom_data_loader)
+
+    """
     val_ds = ImageCaptioningDataset(dataset=val_dataset, processor=processor)
     train_dataloader = torch.utils.data.DataLoader(train_ds, collate_fn=collate_fn, batch_size=cfg.params.batch_size)
     val_dataloader = torch.utils.data.DataLoader(val_ds, collate_fn=collate_fn, batch_size=cfg.params.batch_size)
